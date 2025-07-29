@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 import React from 'react';
-import HeroSection from '../components/HeroSection';
+import HeroSection from '../Components/HeroSection';
 
 const Home = () => {
 return (
