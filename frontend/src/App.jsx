@@ -1,31 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Cart from './pages/Cart';
+import Contact from './pages/Contact';
+import ReturnExchange from './pages/ReturnExchange';
+import Orders from './pages/Orders';
+import Favourites from './pages/Favourites';
 
 function App() {
   return (
-    <div>
-      <nav style={{
-        display: 'flex',
-        gap: '20px',
-        padding: '15px',
-        backgroundColor: '#f0f0f0',
-        borderBottom: '1px solid #ccc'
-      }}>
-        <Link to="/">Home</Link>
-        <Link to="/products">Products</Link>
-        <Link to="/cart">Cart</Link>
-      </nav>
-
+    <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/return-exchange" element={<ReturnExchange />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/favourites" element={<Favourites />} />
       </Routes>
-    </div>
+    </Router>
   );
 }
 
 export default App;
+
+
 
