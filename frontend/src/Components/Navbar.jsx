@@ -1,79 +1,123 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHeart, FaShoppingCart, FaSearch } from 'react-icons/fa';
+import { FaHeart, FaShoppingCart, FaBars, FaUser } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const menuRef = useRef(null);
+  const profileRef = useRef(null);
+  const { user, logout } = useAuth();
 
-  // Close menu on outside click
+  // Access cart and favourites from context
+  const { cart, favourites } = useContext(ShopContext);
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
-    const handler = (event) => {
+    const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
     };
-    document.addEventListener('mousedown', handler);
-    return () => {
-      document.removeEventListener('mousedown', handler);
-    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center relative">
-      {/* Left: Dropdown */}
-      <div className="relative" ref={menuRef}>
+    <nav className="relative bg-[#f5f5dc] border-b shadow-md flex items-center justify-between px-6 py-5">
+      {/* Left: Dropdown menu button */}
+      <div className="relative">
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
           className="text-2xl focus:outline-none"
+          onClick={() => setMenuOpen((prev) => !prev)}
         >
           <FaBars />
         </button>
 
+        {/* Dropdown Menu */}
         <div
-          className={`absolute top-12 left-0 bg-white border rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out origin-top transform ${
-            menuOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
+          ref={menuRef}
+          className={`absolute top-14 left-0 bg-white border rounded-md shadow-lg z-50 transform origin-top transition-all duration-300 ease-in-out ${
+            menuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
           }`}
         >
-          <ul className="flex flex-col p-4 gap-2 min-w-[180px]">
-            <Link to="/" className="hover:text-brown-600">Home</Link>
-            <Link to="/products" className="hover:text-brown-600">Shop</Link>
-            <Link to="/bestsellers" className="hover:text-brown-600">Bestsellers</Link>
-            <Link to="/contact" className="hover:text-brown-600">Contact</Link>
-            <Link to="/returnexchange" className="hover:text-brown-600">Return & Exchange</Link>
-            <Link to="/orders" className="hover:text-brown-600">Your Orders</Link>
+          <ul className="flex flex-col p-4 gap-2 text-sm">
+            <Link to="/" className="hover:text-[#8B4513]">Home</Link>
+            <Link to="/products" className="hover:text-[#8B4513]">Shop</Link>
+            <Link to="/bestsellers" className="hover:text-[#8B4513]">Bestsellers</Link>
+            <Link to="/contact" className="hover:text-[#8B4513]">Contact</Link>
+            <Link to="/returnexchange" className="hover:text-[#8B4513]">Return & Exchange</Link>
+            <Link to="/orders" className="hover:text-[#8B4513]">Your Orders</Link>
           </ul>
         </div>
       </div>
 
       {/* Center: Logo */}
       <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
-        <h1 className="text-4xl font-serif text-[#8B4513]">AMEHA</h1>
-        <p className="text-sm text-[#8B4513]">by Khoobsurat</p>
+        <h1 className="text-3xl md:text-4xl font-serif text-[#8B4513]">AMEHA</h1>
+        <p className="text-sm text-[#8B4513] -mt-1">by Khoobsurat</p>
       </div>
 
-      {/* Right: Search, Icons */}
-      <div className="flex items-center space-x-4">
-        <div className="relative">
+      {/* Right: Search, Favourites, Cart, Profile */}
+      <div className="flex items-center gap-4 relative">
+        <div className="hidden md:block relative">
           <input
             type="text"
-            placeholder="Search"
-            className="border px-6 py-2 pr-10 rounded-md w-72"
+            placeholder="Search..."
+            className="border border-gray-400 px-3 py-1 rounded-md text-sm transition-all duration-300 focus:w-52 w-32 focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
           />
-          <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
-        <Link to="/favourites" className="text-xl hover:text-brown-600">
-          <FaHeart />
+
+        {/* Favourites with badge */}
+        <Link to="/favourites" className="relative">
+          <FaHeart className="text-xl hover:text-[#8B4513]" />
+          {favourites.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center">
+              {favourites.length}
+            </span>
+          )}
         </Link>
-        <Link to="/cart" className="text-xl hover:text-brown-600">
-          <FaShoppingCart />
+
+        {/* Cart with badge */}
+        <Link to="/cart" className="relative">
+          <FaShoppingCart className="text-xl hover:text-[#8B4513]" />
+          {cart.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center">
+              {cart.length}
+            </span>
+          )}
         </Link>
+
+        {/* Profile Icon with Dropdown */}
+        <div className="relative" ref={profileRef}>
+          <button onClick={() => setProfileOpen(prev => !prev)}>
+            <FaUser className="text-xl hover:text-[#8B4513]" />
+          </button>
+          <div
+            className={`absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md z-50 transform origin-top transition-all duration-300 ease-in-out ${
+              profileOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
+            }`}
+          >
+            <ul className="flex flex-col p-2 text-sm">
+              <Link to="/profile" className="hover:bg-gray-100 p-2 rounded">Profile</Link>
+              <Link to="/orders" className="hover:bg-gray-100 p-2 rounded">Your Orders</Link>
+              <Link to="/login" onClick={logout} className="hover:bg-gray-100 p-2 rounded text-red-600">Logout</Link>
+            </ul>
+          </div>
+        </div>
       </div>
     </nav>
   );
 };
 
 export default Navbar;
+
+
 
 
 

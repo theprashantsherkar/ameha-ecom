@@ -12,18 +12,13 @@ export default function HeroSection() {
       {/* Text content */}
       <div className="absolute bottom-10 left-10 text-left z-10">
         <h2 className="text-4xl md:text-5xl font-['Playfair_Display'] text-[white] font-bold mb-4">
-          Elegance Meets Tradition
+          Where Elegance Meets Tradition
         </h2>
-        <button className="px-6 py-2 bg-[#6B4226] text-white rounded-full text-sm hover:bg-[#8B5E3C] transition">
-          Shop Now
-        </button>
         <Link
         to="/products"
-        className="mt-4 inline-block bg-[#6B4226] text-white py-2 px-4 rounded-md text-sm"
-        >
-        Shop Now
+        className="px-4 py-2 bg-[#6B4226] text-white rounded text-sm hover:bg-[#8B5E3C] transition">
+          Shop Now
         </Link>
-
       </div>
     </section>
   );
