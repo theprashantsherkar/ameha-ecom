@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaHeart, FaShoppingCart, FaBars, FaUser } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { ShopContext } from '../context/ShopContext';
@@ -10,11 +10,9 @@ const Navbar = () => {
   const menuRef = useRef(null);
   const profileRef = useRef(null);
   const { user, logout } = useAuth();
-
-  // Access cart and favourites from context
   const { cart, favourites } = useContext(ShopContext);
+  const navigate = useNavigate();
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -27,6 +25,11 @@ const Navbar = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login'); // Ensures navigation happens after logout
+  };
 
   return (
     <nav className="relative bg-[#f5f5dc] border-b shadow-md flex items-center justify-between px-6 py-5">
@@ -50,6 +53,7 @@ const Navbar = () => {
             <Link to="/" className="hover:text-[#8B4513]">Home</Link>
             <Link to="/products" className="hover:text-[#8B4513]">Shop</Link>
             <Link to="/bestsellers" className="hover:text-[#8B4513]">Bestsellers</Link>
+            <Link to="/newarrivals" className="hover:text-[#8B4513]">New Arrivals</Link>
             <Link to="/contact" className="hover:text-[#8B4513]">Contact</Link>
             <Link to="/returnexchange" className="hover:text-[#8B4513]">Return & Exchange</Link>
             <Link to="/orders" className="hover:text-[#8B4513]">Your Orders</Link>
@@ -63,8 +67,9 @@ const Navbar = () => {
         <p className="text-sm text-[#8B4513] -mt-1">by Khoobsurat</p>
       </div>
 
-      {/* Right: Search, Favourites, Cart, Profile */}
+      {/* Right: Search, Favourites, Cart, Profile/Login */}
       <div className="flex items-center gap-4 relative">
+        {/* Search */}
         <div className="hidden md:block relative">
           <input
             type="text"
@@ -93,21 +98,34 @@ const Navbar = () => {
           )}
         </Link>
 
-        {/* Profile Icon with Dropdown */}
+        {/* Profile or Login */}
         <div className="relative" ref={profileRef}>
           <button onClick={() => setProfileOpen(prev => !prev)}>
             <FaUser className="text-xl hover:text-[#8B4513]" />
           </button>
+
           <div
             className={`absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md z-50 transform origin-top transition-all duration-300 ease-in-out ${
               profileOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
             }`}
           >
-            <ul className="flex flex-col p-2 text-sm">
-              <Link to="/profile" className="hover:bg-gray-100 p-2 rounded">Profile</Link>
-              <Link to="/orders" className="hover:bg-gray-100 p-2 rounded">Your Orders</Link>
-              <Link to="/login" onClick={logout} className="hover:bg-gray-100 p-2 rounded text-red-600">Logout</Link>
-            </ul>
+            {user ? (
+              <ul className="flex flex-col p-2 text-sm">
+                <Link to="/profile" className="hover:bg-gray-100 p-2 rounded">Profile</Link>
+                <Link to="/orders" className="hover:bg-gray-100 p-2 rounded">Your Orders</Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-left hover:bg-gray-100 p-2 rounded text-red-600"
+                >
+                  Logout
+                </button>
+              </ul>
+            ) : (
+              <ul className="flex flex-col p-2 text-sm">
+                <Link to="/login" className="hover:bg-gray-100 p-2 rounded">Login</Link>
+                <Link to="/signup" className="hover:bg-gray-100 p-2 rounded">Sign Up</Link>
+              </ul>
+            )}
           </div>
         </div>
       </div>
@@ -116,6 +134,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
 
 

@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user, navigate]);
-
+    useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      window.location.href = "/login";
+    }
+  }, []);
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f5dc]">
       <div className="bg-white p-8 shadow-md rounded-md text-center">
