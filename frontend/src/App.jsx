@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import { CartProvider } from './context/CartContext';
 import { FavouritesProvider } from './context/FavouritesContext';
 
+
 function App() {
   return (
       <CartProvider>
@@ -35,7 +36,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/bestsellers" element={<Bestsellers />} />
-              <Route path="/newarrivals" element={<NewArrivals />} />
+              <Route path="/newarrivals" element={<NewArrivals />} />s
             </Routes>
           </div>
         </FavouritesProvider>
