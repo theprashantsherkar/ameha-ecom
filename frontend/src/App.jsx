@@ -1,5 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProductDetail from './pages/ProductDetail';
 import Navbar from './Components/Navbar'
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -36,7 +37,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/bestsellers" element={<Bestsellers />} />
-              <Route path="/newarrivals" element={<NewArrivals />} />s
+              <Route path="/newarrivals" element={<NewArrivals />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
             </Routes>
           </div>
         </FavouritesProvider>

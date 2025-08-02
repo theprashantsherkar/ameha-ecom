@@ -35,6 +35,8 @@ export const ShopProvider = ({ children }) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const clearCart = () => setCart([]);
+
   const addToFavourites = (product) => {
     setFavourites((prev) =>
       prev.find((item) => item.id === product.id) ? prev : [...prev, product]
@@ -44,6 +46,8 @@ export const ShopProvider = ({ children }) => {
   const removeFromFavourites = (id) => {
     setFavourites((prev) => prev.filter((item) => item.id !== id));
   };
+
+  const clearFavourites = () => setFavourites([]);
 
   const isInCart = (id) => cart.some((item) => item.id === id);
   const isFavourite = (id) => favourites.some((item) => item.id === id);
@@ -55,8 +59,10 @@ export const ShopProvider = ({ children }) => {
         favourites,
         addToCart,
         removeFromCart,
+        clearCart,
         addToFavourites,
         removeFromFavourites,
+        clearFavourites,
         isInCart,
         isFavourite,
       }}
