@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { ShopContext } from '../context/ShopContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const { cart, removeFromCart, clearCart, clearFavourites } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   if (!cart || cart.length === 0) {
     return (
@@ -20,6 +21,8 @@ const Cart = () => {
     clearCart();
     clearFavourites();
   };
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -57,11 +60,26 @@ const Cart = () => {
           </div>
         ))}
       </div>
+
+      {/* Total and Checkout */}
+      <div className="flex justify-between items-center pt-6 border-t">
+        <p className="text-lg font-semibold text-[#4b2e1e]">
+          Total: ₹{total}
+        </p>
+        <button
+          onClick={() => navigate('/checkout')}
+          className="bg-[#8B4513] text-white px-4 py-2 rounded hover:bg-[#6b3410]"
+        >
+          Proceed to Checkout
+        </button>
+      </div>
     </div>
   );
 };
 
 export default Cart;
+
+
 
 
 

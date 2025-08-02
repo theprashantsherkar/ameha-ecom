@@ -1,17 +1,17 @@
 import React from 'react';
-import ProductCard from '../Components/ProductCard';
-import newArrivalsData from '../data/newArrivalsData'; // ✅ Correct import path
+import ProductListWithFilters from '../Components/ProductList';
+import newArrivalsData from '../data/newArrivalsData'; // your sample data
 
 const NewArrivals = () => {
   return (
-    <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {newArrivalsData.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold text-[#4b2e1e] mb-6">New Arrivals</h2>
+      <ProductListWithFilters products={newArrivalsData} />
     </div>
   );
 };
 
 export default NewArrivals;
+
 
 

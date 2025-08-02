@@ -1,17 +1,16 @@
+// src/pages/Products.jsx
 import React from 'react';
-import ProductCard from '../Components/ProductCard';
-import productsData from '../data/productsData'; // ✅ correct path to data
+import ProductList from '../Components/ProductList';
+import products from '../data/productsData'; // or wherever your data is
 
-const Products = () => {
-  return (
-    <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {productsData.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-};
+const Products = () => (
+  <div className="p-6 max-w-7xl mx-auto">
+    <h2 className="text-2xl font-bold text-[#4b2e1e] mb-4">All Products</h2>
+    <ProductList products={products} />
+  </div>
+);
 
 export default Products;
+
 
 
