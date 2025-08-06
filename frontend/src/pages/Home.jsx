@@ -1,12 +1,13 @@
 // src/pages/Home.jsx
 import React from 'react';
 import HeroSection from '../Components/HeroSection';
+import TopCategories from '../Components/TopCategories';
 
 const Home = () => {
 return (
     <div>
     <HeroSection />
-      {/* Add more home content here */}
+    <TopCategories />
     </div>
 );
 };
