@@ -59,6 +59,18 @@ const allProducts = [
     sizes: ["S", "M", "L", "XL"],
     tags: []
   },
+  {
+    id: 6,
+    name: "Floral Co-ord Set",
+    price: 1599,
+    image: "/images/coord1.jpg",
+    description: "Trendy floral co-ord set perfect for casual and festive looks.",
+    category: "Co-ord Sets",
+    fabric: "Cotton Blend",
+    sizes: ["S", "M", "L"],
+    tags: ["new"]
+  }
+
 ];
 
 export default allProducts;

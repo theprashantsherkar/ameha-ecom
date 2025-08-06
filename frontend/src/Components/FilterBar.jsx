@@ -12,6 +12,7 @@ const FilterBar = ({ filters, setFilters }) => {
         <option value="">All Categories</option>
         <option value="Kurti">Kurti</option>
         <option value="Salwar Suit">Salwar Suit</option>
+        <option value="Co-ordsets">Co-ordsets</option>
         {/* Add more categories if needed */}
       </select>
 
