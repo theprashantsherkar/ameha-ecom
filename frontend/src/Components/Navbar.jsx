@@ -61,10 +61,12 @@ const Navbar = () => {
       </div>
 
       {/* Center: Logo */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
-        <h1 className="text-3xl md:text-4xl font-serif text-[#8B4513]">AMEHA</h1>
-        <p className="text-sm text-[#8B4513] -mt-1">by Khoobsurat</p>
-      </div>
+       
+      <Link to={"/"} className="absolute left-1/2 transform -translate-x-1/2 text-center">
+          <h1 className="text-3xl md:text-4xl font-serif text-[#8B4513]">AMEHA</h1>
+       
+      </Link>
+      
 
       {/* Right: Search, Favourites, Cart, Profile/Login */}
       <div className="flex items-center gap-4 relative">

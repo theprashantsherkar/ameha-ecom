@@ -1,6 +1,7 @@
 @import "tailwindcss";
 body {
     @apply bg-[#f5f5dc];
+    overflow-x: hidden;
 }
 @layer utilities {
 .animate-fade-in {
