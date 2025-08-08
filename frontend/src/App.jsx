@@ -15,7 +15,11 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
-
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import RefundPolicy from './pages/RefundPolicy';
+import ShippingPolicy from './pages/ShippingPolicy';
+import Terms from './pages/Terms';
+import ExchangePolicy from './pages/ExchangePolicy';
 
 import { CartProvider } from './context/CartContext';
 import { FavouritesProvider } from './context/FavouritesContext';
@@ -42,6 +46,11 @@ function App() {
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/exchange-policy" element={<ExchangePolicy />} />
             </Routes>
           </div>
         </FavouritesProvider>
