@@ -4,34 +4,59 @@ export const ShopContext = createContext();
 export const useShop = () => useContext(ShopContext);
 
 export const ShopProvider = ({ children }) => {
+  // Initial state from localStorage
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem('cart')) || []);
   const [favourites, setFavourites] = useState(() => JSON.parse(localStorage.getItem('favourites')) || []);
   const [address, setAddress] = useState(() => localStorage.getItem('address') || '');
   const [orderHistory, setOrderHistory] = useState(() => JSON.parse(localStorage.getItem('orderHistory')) || []);
+  const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'EN');
+  const [currency, setCurrency] = useState(() => localStorage.getItem('currency') || 'INR');
 
-  // Sync with localStorage
+  // Save to localStorage on change
   useEffect(() => localStorage.setItem('cart', JSON.stringify(cart)), [cart]);
   useEffect(() => localStorage.setItem('favourites', JSON.stringify(favourites)), [favourites]);
   useEffect(() => localStorage.setItem('address', address), [address]);
   useEffect(() => localStorage.setItem('orderHistory', JSON.stringify(orderHistory)), [orderHistory]);
+  useEffect(() => localStorage.setItem('language', language), [language]);
+  useEffect(() => localStorage.setItem('currency', currency), [currency]);
 
-  // Cart Functions
+  // Get currency symbol
+  const getCurrencySymbol = () => {
+    switch (currency) {
+      case 'USD': return '$';
+      case 'EUR': return '€';
+      case 'INR':
+      default: return '₹';
+    }
+  };
+
+  // Cart functions
   const addToCart = (product) => {
     setCart((prev) => (prev.find((item) => item.id === product.id) ? prev : [...prev, product]));
   };
-  const removeFromCart = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
+
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const clearCart = () => setCart([]);
 
-  // Favourites Functions
+  const isInCart = (id) => cart.some((item) => item.id === id);
+
+  // Favourites functions
   const addToFavourites = (product) => {
     setFavourites((prev) => (prev.find((item) => item.id === product.id) ? prev : [...prev, product]));
   };
-  const removeFromFavourites = (id) => setFavourites((prev) => prev.filter((item) => item.id !== id));
+
+  const removeFromFavourites = (id) => {
+    setFavourites((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const clearFavourites = () => setFavourites([]);
-  const isInCart = (id) => cart.some((item) => item.id === id);
+
   const isFavourite = (id) => favourites.some((item) => item.id === id);
 
-  // Place Order
+  // Order Management
   const placeOrder = (items, paymentMethod, deliveryAddress, totalAmount) => {
     const order = {
       id: Date.now(),
@@ -46,7 +71,6 @@ export const ShopProvider = ({ children }) => {
     clearCart();
   };
 
-  // Cancel Order (can be done anytime for now)
   const cancelOrder = (orderId) => {
     setOrderHistory((prev) =>
       prev.map((order) =>
@@ -55,7 +79,6 @@ export const ShopProvider = ({ children }) => {
     );
   };
 
-  // Request Return (only if Delivered)
   const requestReturn = (orderId, reason) => {
     setOrderHistory((prev) =>
       prev.map((order) =>
@@ -66,7 +89,6 @@ export const ShopProvider = ({ children }) => {
     );
   };
 
-  // Optional: Mock delivery function to mark an order as delivered (for testing return button)
   const markAsDelivered = (orderId) => {
     setOrderHistory((prev) =>
       prev.map((order) =>
@@ -80,27 +102,42 @@ export const ShopProvider = ({ children }) => {
   return (
     <ShopContext.Provider
       value={{
+        // Cart
         cart,
-        favourites,
         addToCart,
         removeFromCart,
         clearCart,
+        isInCart,
+
+        // Favourites
+        favourites,
         addToFavourites,
         removeFromFavourites,
         clearFavourites,
-        isInCart,
         isFavourite,
+
+        // Address
         address,
         setAddress,
-        placeOrder,
+
+        // Orders
         orderHistory,
+        placeOrder,
         cancelOrder,
         requestReturn,
-        markAsDelivered, // optional, for testing
+        markAsDelivered,
+
+        // Language & Currency
+        language,
+        setLanguage,
+        currency,
+        setCurrency,
+        getCurrencySymbol,
       }}
     >
       {children}
     </ShopContext.Provider>
   );
 };
+
 
