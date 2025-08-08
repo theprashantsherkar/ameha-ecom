@@ -11,7 +11,11 @@ theme: {
         secondary: "#D6A77A",   // Warm Beige
         background: "#F5F5F5",  // Light Cream
         accent: "#8B5E3C",      // Medium Brown
-        text: "#2D2D2D"         // Deep Gray
+        text: "#2D2D2D",         // Deep Gray
+        transitionProperty: {
+            'transform': 'transform',
+            'opacity': 'opacity',
+      },
     },
     fontFamily: {
         sans: ["Poppins", "sans-serif"]
