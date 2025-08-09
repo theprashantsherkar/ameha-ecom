@@ -1,6 +1,7 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProductDetail from './pages/ProductDetail';
+import AnnouncementBar from "./Components/AnnouncementBar";
 import Navbar from './Components/Navbar'
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -30,6 +31,7 @@ function App() {
       <CartProvider>
         <FavouritesProvider>
           <div className="App">
+            <AnnouncementBar />
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
