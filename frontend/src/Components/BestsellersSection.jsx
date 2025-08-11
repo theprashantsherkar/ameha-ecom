@@ -1,10 +1,11 @@
 // src/Components/BestsellersSection.jsx
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import bestsellers from "../data/bestsellersData";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import "../styles/scrollbarHide.css"; // We'll add custom scrollbar-hide CSS here
 
 const BestsellersSection = () => {
   const { ref, inView } = useInView({
@@ -12,8 +13,32 @@ const BestsellersSection = () => {
     threshold: 0.1,
   });
 
+  const [startIndex, setStartIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const scrollRef = useRef(null);
+
+  const visibleCards = 5;
+  const totalProducts = bestsellers.length;
+
+  // Auto slide logic
+  useEffect(() => {
+    if (!inView || paused) return;
+    const interval = setInterval(() => {
+      setStartIndex((prev) => (prev + 1) % totalProducts);
+    }, 5000); // every 5 seconds
+    return () => clearInterval(interval);
+  }, [inView, paused, totalProducts]);
+
+  // Calculate products to show (looping)
+  const productsToShow = Array.from({ length: visibleCards }, (_, i) =>
+    bestsellers[(startIndex + i) % totalProducts]
+  );
+
   return (
-    <section ref={ref} className="px-4 md:px-10 py-12 bg-[#fefaf6] relative">
+    <section
+      ref={ref}
+      className="px-4 md:px-10 py-12 bg-[#fefaf6] relative"
+    >
       {/* View All at Top Right */}
       <div className="absolute right-6 top-6 md:right-10">
         <Link
@@ -31,27 +56,44 @@ const BestsellersSection = () => {
         </h2>
       </div>
 
-      {/* Slide-in Product Cards */}
-      <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="flex space-x-5 overflow-x-auto scrollbar-hide pb-2"
+      {/* Scrollable & Auto-rotating Cards */}
+      <div
+        ref={scrollRef}
+        className="flex overflow-x-auto gap-4 scrollbar-hide scroll-smooth"
+        style={{ scrollSnapType: "x mandatory" }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
       >
-        {bestsellers.map((product) => (
-          <motion.div
-            key={product.id}
-            className="min-w-[240px] md:min-w-[270px] flex-shrink-0"
-          >
-            <ProductCard product={product} />
-          </motion.div>
-        ))}
-      </motion.div>
+        <AnimatePresence initial={false}>
+          {productsToShow.map((product) => (
+            <motion.div
+              key={product.id}
+              className="flex-shrink-0"
+              style={{
+                minWidth: "calc(100% / 5 - 1rem)", // 5 cards visible with gap
+                scrollSnapAlign: "start",
+              }}
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -50, opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </section>
   );
 };
 
 export default BestsellersSection;
+
+
+
+
+
+
 
 
 
