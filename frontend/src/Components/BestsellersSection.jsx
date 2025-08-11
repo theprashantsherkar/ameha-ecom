@@ -3,42 +3,67 @@ import React, { useEffect, useRef, useState } from "react";
 import bestsellers from "../data/bestsellersData";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import "../styles/scrollbarHide.css"; // We'll add custom scrollbar-hide CSS here
+import { motion } from "framer-motion";
+import "../styles/scrollbarHide.css";
 
 const BestsellersSection = () => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const containerRef = useRef(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
 
-  const [startIndex, setStartIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const scrollRef = useRef(null);
+  // Duplicate items for seamless infinite loop
+  const itemsToShow = 5;
+  const duplicatedProducts = [...bestsellers, ...bestsellers.slice(0, itemsToShow)];
 
-  const visibleCards = 5;
-  const totalProducts = bestsellers.length;
-
-  // Auto slide logic
   useEffect(() => {
-    if (!inView || paused) return;
-    const interval = setInterval(() => {
-      setStartIndex((prev) => (prev + 1) % totalProducts);
-    }, 5000); // every 5 seconds
-    return () => clearInterval(interval);
-  }, [inView, paused, totalProducts]);
+    let scrollTimer;
+    let interval;
 
-  // Calculate products to show (looping)
-  const productsToShow = Array.from({ length: visibleCards }, (_, i) =>
-    bestsellers[(startIndex + i) % totalProducts]
-  );
+    const startAutoScroll = () => {
+      interval = setInterval(() => {
+        if (!isUserScrolling && containerRef.current) {
+          containerRef.current.scrollBy({
+            left: containerRef.current.offsetWidth / itemsToShow,
+            behavior: "smooth",
+          });
+
+          // Reset to start for infinite effect
+          if (
+            containerRef.current.scrollLeft >=
+            (bestsellers.length) * (containerRef.current.offsetWidth / itemsToShow)
+          ) {
+            setTimeout(() => {
+              containerRef.current.scrollLeft = 0;
+            }, 100);
+          }
+        }
+      }, 1000);
+    };
+
+    startAutoScroll();
+
+    // Detect user scroll
+    const handleUserScroll = () => {
+      setIsUserScrolling(true);
+      clearInterval(interval);
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        setIsUserScrolling(false);
+        startAutoScroll();
+      }, 3000);
+    };
+
+    const refEl = containerRef.current;
+    refEl.addEventListener("scroll", handleUserScroll, { passive: true });
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(scrollTimer);
+      refEl.removeEventListener("scroll", handleUserScroll);
+    };
+  }, [isUserScrolling]);
 
   return (
-    <section
-      ref={ref}
-      className="px-4 md:px-10 py-12 bg-[#fefaf6] relative"
-    >
+    <section className="px-4 md:px-10 py-12 bg-[#fefaf6] relative">
       {/* View All at Top Right */}
       <div className="absolute right-6 top-6 md:right-10">
         <Link
@@ -56,38 +81,37 @@ const BestsellersSection = () => {
         </h2>
       </div>
 
-      {/* Scrollable & Auto-rotating Cards */}
+      {/* Product Carousel */}
       <div
-        ref={scrollRef}
-        className="flex overflow-x-auto gap-4 scrollbar-hide scroll-smooth"
-        style={{ scrollSnapType: "x mandatory" }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        ref={containerRef}
+        className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory"
+        style={{
+          gap: "20px",
+          scrollBehavior: "smooth",
+        }}
       >
-        <AnimatePresence initial={false}>
-          {productsToShow.map((product) => (
-            <motion.div
-              key={product.id}
-              className="flex-shrink-0"
-              style={{
-                minWidth: "calc(100% / 5 - 1rem)", // 5 cards visible with gap
-                scrollSnapAlign: "start",
-              }}
-              initial={{ x: 50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -50, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {duplicatedProducts.map((product, index) => (
+          <motion.div
+            key={index}
+            className="snap-start flex-shrink-0"
+            style={{
+              minWidth: `calc((100% - ${4 * 20}px) / ${itemsToShow})`, // 5 cards with gap
+            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ProductCard product={product} />
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 };
 
 export default BestsellersSection;
+
+
 
 
 

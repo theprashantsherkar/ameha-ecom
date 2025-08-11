@@ -1,4 +1,5 @@
-/* Hide scrollbar but allow scrolling */
+/* src/styles/scrollbarHide.css */
+/* Hide scrollbar but keep scrolling functionality */
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
